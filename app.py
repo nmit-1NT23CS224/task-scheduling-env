@@ -1,27 +1,27 @@
 from env import TaskEnv
 import time
 
+print("App started...")   # <-- important
+
 def agent(tasks):
     if not tasks or len(tasks) == 0:
         return 0
     return max(range(len(tasks)), key=lambda i: tasks[i].get("priority", 0))
 
 while True:
-    try:
-        env = TaskEnv()
-        obs = env.reset()
+    print("Loop running...")   # <-- debug line
 
-        done = False
-        total = 0
+    env = TaskEnv()
+    obs = env.reset()
 
-        while not done:
-            action = agent(obs if isinstance(obs, list) else [])
-            obs, reward, done, _ = env.step(action)
-            total += reward
+    done = False
+    total = 0
 
-        print("Running... Score:", total)
+    while not done:
+        action = agent(obs if isinstance(obs, list) else [])
+        obs, reward, done, _ = env.step(action)
+        total += reward
 
-    except Exception as e:
-        print("Error:", e)
+    print("Running... Score:", total)
 
     time.sleep(5)
