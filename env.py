@@ -35,3 +35,6 @@ class TaskEnv:
         print("Current tasks:")
         for i, task in enumerate(self.tasks):
             print(f"{i}: {task}")
+
+    def state(self):
+        return self.tasks
