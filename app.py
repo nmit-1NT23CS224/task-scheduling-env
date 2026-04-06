@@ -11,21 +11,23 @@ def agent(tasks):
 
 env = TaskEnv()
 
-while True:   
+while True:
     print("Loop running...")
 
     obs = env.reset()
+    print("Tasks:", obs)
+
     done = False
     total = 0
 
     while not done:
-        if not isinstance(obs, list):
-            obs = []
-
         action = agent(obs)
+        print("Chosen action:", action)
+
         obs, reward, done, _ = env.step(action)
         total += reward
 
-    print("Running... Score:", total)
+    print("Final Score:", total)
+    print("----------------------")
 
-    time.sleep(5)   
+    time.sleep(5)
