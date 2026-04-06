@@ -11,7 +11,7 @@ def agent(tasks):
 
 env = TaskEnv()
 
-for episode in range(5):   # run only 5 times (NO infinite loop)
+while True:   
     print("Loop running...")
 
     obs = env.reset()
@@ -27,4 +27,5 @@ for episode in range(5):   # run only 5 times (NO infinite loop)
         total += reward
 
     print("Running... Score:", total)
-    time.sleep(2)
+
+    time.sleep(5)   
