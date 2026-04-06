@@ -6,3 +6,11 @@ tasks:
   - easy
   - medium
   - hard
+name: task-scheduling-env
+version: 1.0
+description: AI environment for task scheduling
+
+tasks:
+  - easy
+  - medium
+  - hard
