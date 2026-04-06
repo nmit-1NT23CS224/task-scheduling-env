@@ -1,62 +1,36 @@
-<<<<<<< HEAD
-from tasks import tasks_list
-from grader import grade
+import random
 
 class TaskEnv:
-
     def __init__(self):
-        self.index = 0
+        self.tasks = []
+        self.done = False
 
     def reset(self):
-        self.index = 0
-        return {"tasks": tasks_list[self.index]}
+
+        self.tasks = [
+            {"priority": random.randint(1, 5), "deadline": random.randint(1, 10), "duration": random.randint(1, 5)}
+            for _ in range(5)
+        ]
+        self.done = False
+        return self.tasks
 
     def step(self, action):
-        current_tasks = tasks_list[self.index]
-        selected = current_tasks[action]
+        if self.done:
+            return self.tasks, 0, True, {}
 
-        reward = grade(selected, current_tasks)
 
-        self.index += 1
-        done = self.index >= len(tasks_list)
+        task = self.tasks[action]
 
-        if not done:
-            obs = {"tasks": tasks_list[self.index]}
-        else:
-            obs = None
+        reward = task.get("priority", 0)
 
-        return obs, reward, done, {}
+        self.tasks.pop(action)
 
-    def state(self):
-=======
-from tasks import tasks_list
-from grader import grade
+        if len(self.tasks) == 0:
+            self.done = True
 
-class TaskEnv:
+        return self.tasks, reward, self.done, {}
 
-    def __init__(self):
-        self.index = 0
-
-    def reset(self):
-        self.index = 0
-        return {"tasks": tasks_list[self.index]}
-
-    def step(self, action):
-        current_tasks = tasks_list[self.index]
-        selected = current_tasks[action]
-
-        reward = grade(selected, current_tasks)
-
-        self.index += 1
-        done = self.index >= len(tasks_list)
-
-        if not done:
-            obs = {"tasks": tasks_list[self.index]}
-        else:
-            obs = None
-
-        return obs, reward, done, {}
-
-    def state(self):
->>>>>>> 6fb65bbc529d4cc42624246fca08d99e8f1a4116
-        return tasks_list[self.index]
+    def render(self):
+        print("Current Tasks:")
+        for i, task in enumerate(self.tasks):
+            print(f"{i}: {task}")
