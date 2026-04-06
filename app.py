@@ -7,8 +7,7 @@ env = TaskEnv()
 
 @app.post("/reset")
 def reset():
-    obs = env.reset()
-    return {"observation": obs}
+    return {"observation": env.reset()}
 
 @app.post("/step")
 def step(action: dict):
