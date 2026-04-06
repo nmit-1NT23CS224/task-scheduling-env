@@ -6,21 +6,22 @@ class TaskEnv:
         self.done = False
 
     def reset(self):
-
         self.tasks = [
-            {"priority": random.randint(1, 5), "deadline": random.randint(1, 10), "duration": random.randint(1, 5)}
+            {
+                "priority": random.randint(1, 5),
+                "deadline": random.randint(1, 10),
+                "duration": random.randint(1, 5)
+            }
             for _ in range(5)
         ]
         self.done = False
         return self.tasks
 
     def step(self, action):
-        if self.done:
+        if self.done or action >= len(self.tasks):
             return self.tasks, 0, True, {}
 
-
         task = self.tasks[action]
-
         reward = task.get("priority", 0)
 
         self.tasks.pop(action)
@@ -31,6 +32,6 @@ class TaskEnv:
         return self.tasks, reward, self.done, {}
 
     def render(self):
-        print("Current Tasks:")
+        print("Current tasks:")
         for i, task in enumerate(self.tasks):
             print(f"{i}: {task}")

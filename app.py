@@ -8,27 +8,23 @@ def agent(tasks):
         return 0
     return max(range(len(tasks)), key=lambda i: tasks[i].get("priority", 0))
 
-while True:
+
+env = TaskEnv()
+
+for episode in range(5):   # run only 5 times (NO infinite loop)
     print("Loop running...")
 
-    try:
-        env = TaskEnv()
-        obs = env.reset()
+    obs = env.reset()
+    done = False
+    total = 0
 
-        done = False
-        total = 0
+    while not done:
+        if not isinstance(obs, list):
+            obs = []
 
-        while not done:
-            if not isinstance(obs, list):
-                obs = []
+        action = agent(obs)
+        obs, reward, done, _ = env.step(action)
+        total += reward
 
-            action = agent(obs)
-            obs, reward, done, _ = env.step(action)
-            total += reward
-
-        print("Running... Score:", total)
-
-    except Exception as e:
-        print("Error:", e)
-
-    time.sleep(5)
+    print("Running... Score:", total)
+    time.sleep(2)

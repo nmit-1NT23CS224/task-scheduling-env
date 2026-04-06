@@ -10,22 +10,12 @@ pinned: false
 
 # Task Scheduling Environment
 
-## Description
-This project simulates a real-world task scheduling problem where an AI agent selects tasks based on priority.
+This project simulates a task scheduling problem using a simple AI agent.
 
 ## Features
-- step(), reset(), state()
-- Reward-based learning
 - Multiple tasks
+- Priority-based selection
+- Reward system
 
-## How to Run
-pip install -r requirements.txt  
-python main.py
-
-## Tasks
-- Easy: Choose highest priority
-- Medium: Priority + deadline
-- Hard: Priority + deadline + duration
-
-## Baseline Score
-3.0
+## Run
+python app.py
