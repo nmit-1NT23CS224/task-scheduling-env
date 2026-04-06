@@ -20,7 +20,7 @@ This project simulates a real-world task scheduling problem where an AI agent se
 
 ## How to Run
 pip install -r requirements.txt  
-python main.py
+python main.py  
 
 ## Tasks
 - Easy: Choose highest priority  
@@ -28,4 +28,4 @@ python main.py
 - Hard: Priority + deadline + duration  
 
 ## Baseline Score
-3.0
+- 3.0
