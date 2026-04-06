@@ -1,43 +1,26 @@
-import gradio as gr
+from fastapi import FastAPI
 from env import TaskEnv
 
-def agent(tasks):
-    if not tasks:
-        return 0
-    return max(range(len(tasks)), key=lambda i: tasks[i].get("priority", 0))
+app = FastAPI()
 
+env = TaskEnv()
 
-def run_simulation():
-    env = TaskEnv()
-    obs = env.reset()
+@app.post("/reset")
+def reset():
+    return {"observation": env.reset()}
 
-    output = "📋 Tasks:\n"
-    for i, t in enumerate(obs):
-        output += f"{i}: {t}\n"
+@app.post("/step")
+def step(action: dict):
+    action_index = action.get("action", 0)
+    obs, reward, done, info = env.step(action_index)
 
-    total = 0
-    steps = "\n🤖 Actions:\n"
+    return {
+        "observation": obs,
+        "reward": reward,
+        "done": done,
+        "info": info
+    }
 
-    done = False
-    while not done:
-        action = agent(obs)
-        steps += f"Chosen action: {action}\n"
-
-        obs, reward, done, _ = env.step(action)
-        total += reward
-
-    result = f"\n🎯 Final Score: {total}"
-
-    return output + steps + result
-
-
-# Gradio UI
-interface = gr.Interface(
-    fn=run_simulation,
-    inputs=[],
-    outputs="text",
-    title="🚀 Task Scheduling AI",
-    description="Click the button to run task scheduling simulation"
-)
-
-interface.launch(server_name="0.0.0.0", server_port=7860)
+@app.get("/state")
+def state():
+    return {"tasks": env.tasks, "done": env.done}
