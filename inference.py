@@ -1,40 +1,40 @@
 import os
 from openai import OpenAI
-from env import TaskEnv
+from tasks import get_tasks
 
-# Read environment variables
-API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
-MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o-mini")
-HF_TOKEN = os.getenv("HF_TOKEN")
-
-# Create OpenAI client
+# ✅ MUST use LiteLLM proxy (important for validation)
 client = OpenAI(
-    base_url=API_BASE_URL,
-    api_key=HF_TOKEN
+    base_url=os.environ["API_BASE_URL"],
+    api_key=os.environ["API_KEY"]
 )
 
-env = TaskEnv()
+def choose_action(tasks):
+    prompt = f"""
+You are a task scheduling AI.
 
-print("[START]")
+Tasks:
+{tasks}
 
-obs = env.reset()
-done = False
-total_reward = 0
+Choose the best task index (0-based) based on highest priority.
+Return ONLY the index number.
+"""
 
-step_count = 0
+    response = client.chat.completions.create(
+        model=os.environ.get("MODEL_NAME", "gpt-4o-mini"),
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
 
-while not done:
-    step_count += 1
+    return int(response.choices[0].message.content.strip())
 
-    # Simple agent: choose highest priority task
-    if not obs:
-        action = 0
-    else:
-        action = max(range(len(obs)), key=lambda i: obs[i].get("priority", 0))
 
-    obs, reward, done, _ = env.step(action)
-    total_reward += reward
+def main():
+    tasks = get_tasks()
+    action = choose_action(tasks)
 
-    print(f"[STEP] step={step_count} action={action} reward={reward}")
+    print(f"Chosen action: {action}")
 
-print(f"[END] total_reward={total_reward}")
+
+if __name__ == "__main__":
+    main()
