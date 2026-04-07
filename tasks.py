@@ -1,6 +1,6 @@
 def get_tasks():
     return [
-        {"name": "Assignment", "priority": 3},
-        {"name": "Gaming", "priority": 1},
-        {"name": "Exam Study", "priority": 5}
+        {"id": 0, "priority": 3},
+        {"id": 1, "priority": 1},
+        {"id": 2, "priority": 5}
     ]

@@ -1,8 +1,9 @@
 def grade(task, action):
-    
-    correct = 2
+    priorities = [t["priority"] for t in task]
+
+    correct = priorities.index(max(priorities))
 
     if action == correct:
-        return 0.9   
+        return 0.8  
     else:
-        return 0.3   
+        return 0.4  
