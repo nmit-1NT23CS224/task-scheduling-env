@@ -1,11 +1,14 @@
 [project]
 name = "task-scheduling-env"
 version = "0.1.0"
-description = "Task Scheduling Environment for OpenEnv"
 dependencies = [
     "fastapi",
     "uvicorn",
     "pydantic",
     "openai",
-    "gradio"
+    "gradio",
+    "openenv-core>=0.2.0"
 ]
+
+[project.scripts]
+server = "app:app"
