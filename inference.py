@@ -1,4 +1,5 @@
 import os
+import re
 from openai import OpenAI
 
 client = OpenAI(
@@ -16,10 +17,16 @@ def fallback_agent(tasks):
     priorities = [t["priority"] for t in tasks]
     return priorities.index(max(priorities))
 
+
+
 def grade(tasks, action):
     priorities = [t["priority"] for t in tasks]
     correct = priorities.index(max(priorities))
-    return 0.8 if action == correct else 0.4
+
+    if action == correct:
+        return 0.9
+    else:
+        return 0.3
 
 
 def main():
@@ -36,10 +43,9 @@ def main():
 
             content = response.choices[0].message.content.strip()
 
-            try:
-                action = int(content)
-            except:
-                action = fallback_agent(tasks)
+        
+            nums = re.findall(r"\d+", content)
+            action = int(nums[0]) if nums else fallback_agent(tasks)
 
         except Exception:
             action = fallback_agent(tasks)
