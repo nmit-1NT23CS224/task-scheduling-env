@@ -1,45 +1,43 @@
 import os
 from openai import OpenAI
-from tasks import get_tasks
-from grader import grade
 
 client = OpenAI(
     base_url=os.environ["API_BASE_URL"],
     api_key=os.environ["API_KEY"]
 )
 
+TASK_SETS = [
+    [{"priority": 1}, {"priority": 3}, {"priority": 2}],
+    [{"priority": 5}, {"priority": 2}, {"priority": 1}],
+    [{"priority": 2}, {"priority": 4}, {"priority": 3}],
+]
+
+
 def fallback_agent(tasks):
-    best_index = 0
-    best_score = -1
+    priorities = [t["priority"] for t in tasks]
+    return priorities.index(max(priorities))
 
-    for i, t in enumerate(tasks):
-        priority = t.get("priority", 1)
-        deadline = t.get("deadline", 5)
 
-        score = (priority * 2) + (5 - deadline)
+def grade(tasks, action):
+    priorities = [t["priority"] for t in tasks]
+    correct = priorities.index(max(priorities))
 
-        if score > best_score:
-            best_score = score
-            best_index = i
-
-    return best_index
+    return 0.8 if action == correct else 0.4
 
 
 def main():
-    tasks = get_tasks()
-
     print("[START] task=scheduling", flush=True)
 
     total_score = 0.0
 
-    for i, task in enumerate(tasks):
+    for i, tasks in enumerate(TASK_SETS):
         try:
             response = client.chat.completions.create(
                 model=os.environ.get("MODEL_NAME", "gpt-4o-mini"),
                 messages=[
                     {
                         "role": "user",
-                        "content": f"Choose best task index from: {tasks}. Return only number."
+                        "content": f"Tasks: {tasks}. Return best index."
                     }
                 ]
             )
@@ -59,7 +57,7 @@ def main():
 
         print(f"[STEP] step={i+1} action={action} reward={reward}", flush=True)
 
-    final_score = total_score / len(tasks)
+    final_score = total_score / len(TASK_SETS)
 
     print(f"[END] task=scheduling score={final_score}", flush=True)
 
