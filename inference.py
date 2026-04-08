@@ -12,33 +12,25 @@ TASK_SETS = [
     [{"priority": 2}, {"priority": 4}, {"priority": 3}],
 ]
 
-
 def fallback_agent(tasks):
     priorities = [t["priority"] for t in tasks]
     return priorities.index(max(priorities))
 
-
 def grade(tasks, action):
     priorities = [t["priority"] for t in tasks]
     correct = priorities.index(max(priorities))
-
     return 0.8 if action == correct else 0.4
 
 
 def main():
-    print("[START] task=scheduling", flush=True)
-
-    total_score = 0.0
-
     for i, tasks in enumerate(TASK_SETS):
+        print(f"[START] task=task{i+1}", flush=True)
+
         try:
             response = client.chat.completions.create(
                 model=os.environ.get("MODEL_NAME", "gpt-4o-mini"),
                 messages=[
-                    {
-                        "role": "user",
-                        "content": f"Tasks: {tasks}. Return best index."
-                    }
+                    {"role": "user", "content": f"Tasks: {tasks}. Return best index."}
                 ]
             )
 
@@ -53,13 +45,9 @@ def main():
             action = fallback_agent(tasks)
 
         reward = grade(tasks, action)
-        total_score += reward
 
-        print(f"[STEP] step={i+1} action={action} reward={reward}", flush=True)
-
-    final_score = total_score / len(TASK_SETS)
-
-    print(f"[END] task=scheduling score={final_score}", flush=True)
+        print(f"[STEP] step=1 action={action} reward={reward}", flush=True)
+        print(f"[END] task=task{i+1} score={reward}", flush=True)
 
 
 if __name__ == "__main__":
